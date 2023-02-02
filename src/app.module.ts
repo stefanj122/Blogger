@@ -1,0 +1,36 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { PostsModule } from './posts/posts.module';
+import { DataSource } from 'typeorm';
+import { UserModule } from './user/user.module';
+import { CommentModule } from './comment/comment.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MailModule } from './mail/mail.module';
+
+@Module({
+  imports: [
+    PostsModule,
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      username: 'root',
+      password: 'root',
+      database: 'kurs',
+      entities: ['./dist/entitie/*.entitie.js'],
+      synchronize: true,
+      migrations: ['./dist/migration/*.js'],
+      autoLoadEntities: true,
+    }),
+    UserModule,
+    CommentModule,
+    EventEmitterModule.forRoot(),
+    MailModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}
