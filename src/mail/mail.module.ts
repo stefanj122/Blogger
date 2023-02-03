@@ -13,8 +13,8 @@ import { ApproveMailListener } from 'src/events/approveMail.listener';
         secure: false,
         port: 587,
         auth: {
-          user: 'stefan.jeftic122@gmail.com',
-          pass: 'xsmtpsib-f330f922361a0a6f0f954fe1a974fd7d6f5a00f50aacbda0de0717444b8ec518-m3IdRJx7fYMbXHra',
+          user: process.env.MAIL_EMAIL,
+          pass: process.env.MAIL_PASSWORD,
         },
       },
       template: {
