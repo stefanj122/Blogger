@@ -8,9 +8,11 @@ import { UserModule } from './user/user.module';
 import { CommentModule } from './comment/comment.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MailModule } from './mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     PostsModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
