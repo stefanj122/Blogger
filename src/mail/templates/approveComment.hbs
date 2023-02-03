@@ -1,10 +1,15 @@
+<style>
+  .button { background-color: red; border: none; color: white; padding: 5px
+  10px; text-align: center; text-decoration: none; display: inline-block;
+  font-size: 16px; margin: 4px 2px; cursor: pointer; }
+</style>
 <p>Hey {{name}},</p>
 <p>Your post have new comments:</p>
 <p>Title:{{title}},</p>
 <p>Content:{{content}}.</p>
 <p>Do you want to approve this comment?</p>
 <p>
-  <a href='{{urlApprove}}'>Approve</a>
+  <a href='{{urlApprove}}' class='button'>Approve</a>
   OR
-  <a href='{{urlDontApprove}}'>Don't approve</a>.
+  <a href='{{urlDontApprove}}' class='button'>Don't approve</a>.
 </p>

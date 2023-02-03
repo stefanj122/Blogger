@@ -10,10 +10,11 @@ export class MailService {
     const urlApprove = `http://localhost:3000/comment/approve/${comment.id}/?approve=true`;
     const urlDontApprove = `http://localhost:3000/comment/approve/${comment.id}/?approve=false`;
 
-    await this.mailerService.sendMail({
+    const result = await this.mailerService.sendMail({
       to: user.email,
       from: 'stefan.jeftic122@gmail.com',
       template: './approveComment',
+      subject: 'Approve Comment',
       context: {
         name: user.name,
         title: comment.title,
@@ -22,5 +23,6 @@ export class MailService {
         urlDontApprove,
       },
     });
+    console.log(result);
   }
 }

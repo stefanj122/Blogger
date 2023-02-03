@@ -19,7 +19,7 @@ import { ConfigModule } from '@nestjs/config';
       host: 'localhost',
       username: 'root',
       password: 'root',
-      database: 'kurs',
+      database: process.env.DATABASE,
       entities: ['./dist/entitie/*.entitie.js'],
       synchronize: true,
       migrations: ['./dist/migration/*.js'],

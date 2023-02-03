@@ -4,16 +4,18 @@ import { join } from 'path';
 import { MailService } from './mail.service';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ApproveMailListener } from 'src/events/approveMail.listener';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     MailerModule.forRoot({
       transport: {
         host: 'smtp-relay.sendinblue.com',
         secure: false,
         port: 587,
         auth: {
-          user: process.env.MAIL_EMAIL,
+          user: process.env.MAIL_USER,
           pass: process.env.MAIL_PASSWORD,
         },
       },
