@@ -108,8 +108,8 @@ export class CommentService {
       );
 
       return await this.commentRepository.update({ id }, comment);
-    } else if (comment) {
-      throw new BadRequestException('Comment already approved');
+    } else if (!comment.isApproved) {
+      return await this.commentRepository.delete({ id });
     } else {
       throw new BadRequestException('Comment not found');
     }

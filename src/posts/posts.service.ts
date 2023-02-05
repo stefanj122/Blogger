@@ -6,7 +6,7 @@ import { UpdatePostsDto } from 'src/dto/UpdatePostsDto.dto';
 import { Post } from 'src/entitie/post.entitie';
 import { PostStatus } from 'src/entitie/postStatus.entity';
 import { User } from 'src/entitie/user.entity';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PostsService {
@@ -24,7 +24,10 @@ export class PostsService {
   }
 
   async getPostsById(id: number): Promise<Post> {
-    const post = await this.postsRepository.findOneBy({ id });
+    const post = await this.postsRepository.findOne({
+      where: { id, comments: { isApproved: true } },
+      relations: ['comments'],
+    });
     if (post) {
       this.eventEmitter.emit('postVisited', post.id);
       return post;
@@ -52,7 +55,7 @@ export class PostsService {
   async getUserPosts(id: number): Promise<Post[]> {
     const user = await this.userRepository.findOneBy({ id });
     return await this.postsRepository.find({
-      where: { user: Like(user.id) },
+      where: { user: { id: user.id } },
       relations: ['user'],
     });
   }

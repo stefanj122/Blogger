@@ -13,7 +13,7 @@ export class MailService {
     const result = await this.mailerService.sendMail({
       to: user.email,
       from: 'stefan.jeftic122@gmail.com',
-      template: './approveComment',
+      template: './obradMail',
       subject: 'Approve Comment',
       context: {
         name: user.name,
