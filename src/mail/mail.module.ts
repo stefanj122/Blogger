@@ -11,7 +11,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot(),
     MailerModule.forRoot({
       transport: {
-        host: 'smtp-relay.sendinblue.com',
+        host: process.env.MAIL_HOST,
         secure: false,
         port: 587,
         auth: {

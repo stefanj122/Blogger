@@ -16,9 +16,9 @@ import { ConfigModule } from '@nestjs/config';
     PostsModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      username: 'root',
-      password: 'root',
+      host: process.env.DATABASE_HOST,
+      username: process.env.DATABASE_USERNAME,
+      password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE,
       entities: ['./dist/entitie/*.entitie.js'],
       synchronize: true,

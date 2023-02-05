@@ -5,68 +5,73 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <title>Mejl</title>
     <style>
-      * { box-sizing: border-box;} body { margin: 0; background-color: white;
-      overflow: hidden; font-family: 'Franklin Gothic Medium', 'Arial Narrow',
-      Arial, sans-serif; } table { border-spacing: 0; } td{ padding: 0;
-      text-align: center; } img{ border: 0; } .wrapper{ width: 100%;
-      table-layout: fixed; background-color: #224BE4; text-align: left; padding:
-      10px 0 15px 15px; } .web{ text-decoration: none; font-size: 35px;
-      font-weight: 400; color: white; text-align: left; } .main{
-      background-color: #224BE4; margin: 0 auto; width: 100%; max-width: 600px;
-      border-spacing: 0; color: black; } p{ font-size: 25px; } .div1{
-      background-color: #224BE4; width: 600px; height: 200px; text-align:
-      center; color: white; border-radius: 10px; margin-top: 60px; } .p1{
-      padding-top: 15px; } .p2{ text-align: left; padding-left: 10px;
-      padding-right: 10px; } .button { background-color: #224BE4; border: none;
-      color: white; border-radius: 5px; margin-top: 92px; padding: 10px 15px;
-      text-align: center; text-decoration: none; display: inline-block;
-      font-size: 16px; cursor: pointer; } .button:hover { transform:
-      translateY(-3px); box-shadow: 0 0 10px #224BE4; } .button:active {
-      transform: translateY(3px); box-shadow: 0 0 15px #224BE4; } @media
-      (max-width: 576px) { .main { max-width: 90%; } .div1 { width: 90%; } p {
-      font-size: 20px; } .web { font-size: 25px; } }
+      body{ font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial,
+      sans-serif; margin: 0; padding: 0; } .div1{ background-color: #0087FF;
+      padding-bottom: 10px; border-bottom: 3px solid gold; max-width: 600px; }
+      .website{ display: inline-block; color: aliceblue; text-decoration: none;
+      font-size: 32px; text-align: center; padding-top: 10px; } .div2{ display:
+      block; background-color: white; padding-bottom: 10px; padding-top: 50px;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+      'Lucida Sans Unicode', Geneva, Verdana, sans-serif ; } .p1{ font-size:
+      20px; } .div3{ background-color: #0087FF; padding-top: 1px; max-width:
+      600px; padding-bottom: 40px; color: white; text-align: center;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+      'Lucida Sans Unicode', Geneva, Verdana, sans-serif ; } .p3{ font-size:
+      20px; } .p4{ padding-top: 10px; } .div4{ padding-top: 30px; } .button{
+      background-color: #224BE4; border: none; color: white; border-radius: 5px;
+      padding: 10px 15px; text-align: center; text-decoration: none; display:
+      inline-block; font-size: 16px; cursor: pointer; } .button:hover {
+      transform: translateY(-3px); box-shadow: 0 0 10px #224BE4; }
+      .button:active { transform: translateY(3px); box-shadow: 0 0 15px #224BE4;
+      } .footer{ display: flex; position: fixed; flex-direction: column;
+      align-items: center; justify-content: center; bottom: 0; width: 100%;
+      background-color: #0087FF; color: aliceblue; text-align: center;
+      padding-top: 20px; max-width: 600px; height: 100px; left: 0; right: 0;
+      margin: auto; border-top: 2px solid gold; } .footer-logos{ display: flex;
+      justify-content: center; margin-bottom: 20px; } .footer-logos img { width:
+      40px; height: 40px; margin: 0 10px; } .home img{ width: 50px; height:
+      50px; margin: 0 auto; text-align: center; padding-bottom: 10px; }
+
     </style>
   </head>
   <body>
-    <center class='wrapper'>
-
-      <table class='main' width='100%'>
-        <!-- TOP-->
-
-        <tr>
-          <td>
-            <table width='100%'>
-
-              <tr>
-                <td>
-                  <a class='web' href='www.mywebsite.com'>mywebsite.com</a>
-                </td>
-              </tr>
-
-            </table>
-          </td>
-        </tr>
-      </table>
-    </center>
-    <!--PORUKA-->
     <center>
-      <div>
-        <p>Hey {{name}}</p>
-        <p>Your post have new comment:</p>
-      </div>
-
       <div class='div1'>
-        <p class='p1'>Title: {{title}}</p>
-
-        <p class='p2'> Content: {{content}}</p>
+        <a class='website' href='mywebsite.com'>Bloggerapp.com</a>
       </div>
-    </center>
-    <center>
-      <div>
+
+      <div class='div2'>
+        <p class='p1'>Hey {{name}}</p>
+        <p class='p2'>Your post have new comment:</p>
+      </div>
+
+      <div class='div3'>
+        <p class='p3'>Title: {{title}}</p>
+        <p class='p4'>Content: {{content}}</p>
+      </div>
+
+      <div class='div4'>
         <a href='{{urlApprove}}' class='button'>Approve</a>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-        <a href='{{urlDontApprove}}' class='button dont'>Don't approve</a>
+        <a href='{{urlDontApprove}}' class='button'>Don't approve</a>
+      </div>
+      <div class='footer'>
+        <div class='home'>
+          <a href='https://www.mywebsitee.com/' target='_blank'>
+            <img src='cid:home' alt='Instagram logo' />
+
+          </a>
+        </div>
+        <div class='footer-logos'>
+          <a href='https://www.facebook.com/mywebsite/' target='_blank'>
+            <img src='white-facebook.png' alt='Facebook logo' />
+          </a>
+          <a href='https://www.instagram.com/mywebsite/' target='_blank'>
+            <img src='white-instagram.png' alt='Instagram logo' />
+          </a>
+
+        </div>
       </div>
     </center>
   </body>

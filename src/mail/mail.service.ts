@@ -22,6 +22,23 @@ export class MailService {
         urlApprove,
         urlDontApprove,
       },
+      attachments: [
+        {
+          filename: 'home.png',
+          path: __dirname + '/templates/home.png',
+          cid: 'home',
+        },
+        {
+          filename: 'white-facebook.png',
+          path: __dirname + '/templates/white-facebook.png',
+          cid: 'facebook',
+        },
+        {
+          filename: 'white-instagram.png',
+          path: __dirname + '/templates/white-instagram.png',
+          cid: 'instagram',
+        },
+      ],
     });
     console.log(result);
   }
