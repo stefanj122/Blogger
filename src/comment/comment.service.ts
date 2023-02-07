@@ -81,31 +81,23 @@ export class CommentService {
       relations: ['post', 'user'],
     });
     comment.isApproved = approve;
-    if (comment && comment.isApproved) {
-      const post = await this.postRepository.findOne({
+    if (comment.isApproved) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { stats, ...post } = await this.postRepository.findOne({
         where: { id: comment.post.id },
         relations: ['stats'],
       });
-      comment.isApproved = true;
 
-      post.stats.avgRating *= post.stats.numberOfComments;
-      post.stats.numberOfComments++;
+      stats.avgRating *= stats.numberOfComments;
+      stats.numberOfComments++;
       if (comment.user) {
-        post.stats.userComments++;
+        stats.userComments++;
       } else {
-        post.stats.guestComments++;
+        stats.guestComments++;
       }
-      post.stats.avgRating += comment.rate;
-      post.stats.avgRating /= post.stats.numberOfComments;
-      await this.postStatsRepository.update(
-        { id: post.stats.id },
-        {
-          numberOfComments: post.stats.numberOfComments,
-          avgRating: post.stats.avgRating,
-          userComments: post.stats.userComments,
-          guestComments: post.stats.guestComments,
-        },
-      );
+      stats.avgRating += comment.rate;
+      stats.avgRating /= stats.numberOfComments;
+      await this.postStatsRepository.update({ id: stats.id }, stats);
 
       return await this.commentRepository.update({ id }, comment);
     } else if (!comment.isApproved) {
