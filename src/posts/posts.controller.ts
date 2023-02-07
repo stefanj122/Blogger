@@ -12,6 +12,7 @@ import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileUploadDto } from 'src/dto/CreateFileDto.entity';
 import { CreatePostsDto } from 'src/dto/CreatePostsDto.dto';
 import { UpdatePostsDto } from 'src/dto/UpdatePostsDto.dto';
+import { Comment } from 'src/entitie/comment.entity';
 import { Post as customPost } from 'src/entitie/post.entitie';
 import { PostsService } from './posts.service';
 
@@ -27,7 +28,7 @@ export class PostsController {
   @Get(':id')
   async getPostsById(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<customPost> {
+  ): Promise<{ post: customPost; comments: Comment[] }> {
     return await this.postsService.getPostsById(id);
   }
   @Post()

@@ -3,6 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePostsDto } from 'src/dto/CreatePostsDto.dto';
 import { UpdatePostsDto } from 'src/dto/UpdatePostsDto.dto';
+import { Comment } from 'src/entitie/comment.entity';
 import { Post } from 'src/entitie/post.entitie';
 import { PostStatus } from 'src/entitie/postStatus.entity';
 import { User } from 'src/entitie/user.entity';
@@ -13,6 +14,7 @@ export class PostsService {
   constructor(
     @InjectRepository(Post) private postsRepository: Repository<Post>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Comment) private commentRepository: Repository<Comment>,
     @InjectRepository(PostStatus)
     private postStatsRepository: Repository<PostStatus>,
     private eventEmitter: EventEmitter2,
@@ -23,35 +25,46 @@ export class PostsService {
     return { posts: data, count: count };
   }
 
-  async getPostsById(id: number): Promise<Post> {
+  async getPostsById(id: number): Promise<{ post: Post; comments: Comment[] }> {
     const post = await this.postsRepository.findOne({
-      where: { id, comments: { isApproved: true } },
-      relations: ['comments'],
+      where: { id },
+    });
+    const comments = await this.commentRepository.find({
+      where: { post: { id: post.id }, isApproved: true },
     });
     if (post) {
       this.eventEmitter.emit('postVisited', post.id);
-      return post;
+      return { post, comments };
     }
     throw new BadRequestException('Post not found');
   }
+
   async createPost(createPostsDto: CreatePostsDto): Promise<Post> {
     const user = await this.userRepository.findOneBy({
       id: createPostsDto.userId,
     });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
     const postStats = await this.postStatsRepository.save({});
     const post = await this.postsRepository.save({
-      ...createPostsDto,
       user: user,
       stats: postStats,
+      ...createPostsDto,
     });
     return post;
   }
-  async updatePost(updatePostDto: Partial<UpdatePostsDto>, id: number) {
-    return this.postsRepository.update({ id: id }, updatePostDto);
+
+  async updatePost(
+    updatePostDto: Partial<UpdatePostsDto>,
+    id: number,
+  ): Promise<Post> {
+    return this.postsRepository.save({ id, ...updatePostDto });
   }
   deletePost(id: number) {
     return this.postsRepository.delete({ id });
   }
+
   async getUserPosts(id: number): Promise<Post[]> {
     const user = await this.userRepository.findOneBy({ id });
     return await this.postsRepository.find({
@@ -59,6 +72,7 @@ export class PostsService {
       relations: ['user'],
     });
   }
+
   async getPostStatus(id: number): Promise<Post> {
     const post = await this.postsRepository.findOne({
       where: { id },
@@ -69,16 +83,5 @@ export class PostsService {
     } else {
       throw new BadRequestException('Post not found');
     }
-  }
-  async postVisit(id: number) {
-    const post = await this.postsRepository.findOne({
-      where: { id },
-      relations: ['stats'],
-    });
-    post.stats.postViews++;
-    await this.postStatsRepository.update(
-      { id: post.stats.id },
-      { postViews: post.stats.postViews },
-    );
   }
 }

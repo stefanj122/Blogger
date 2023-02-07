@@ -5,7 +5,6 @@ import { paginate, PaginateQuery } from 'nestjs-paginate';
 import { CreateCommentDto } from 'src/dto/CreateCommentDto.dto';
 import { Comment } from 'src/entitie/comment.entity';
 import { Post } from 'src/entitie/post.entitie';
-import { PostStatus } from 'src/entitie/postStatus.entity';
 import { User } from 'src/entitie/user.entity';
 import { Repository } from 'typeorm';
 
@@ -15,8 +14,6 @@ export class CommentService {
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
     @InjectRepository(Post) private postRepository: Repository<Post>,
     @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(PostStatus)
-    private postStatsRepository: Repository<PostStatus>,
     private eventEmitter: EventEmitter2,
   ) {}
 
@@ -61,13 +58,15 @@ export class CommentService {
   async getComments(
     page: number,
     limit: number,
+    postId: number,
   ): Promise<{ count: number; data: Comment[] }> {
     const [data, count] = await this.commentRepository.findAndCount({
-      where: { isApproved: true },
-      relations: ['user', 'post'],
+      where: { isApproved: true, post: { id: postId } },
+      relations: ['user'],
       take: limit,
       skip: (page - 1) * limit,
     });
+    this.eventEmitter.emit('postVisited', postId);
     return { count, data };
   }
   async findAllComments(query: PaginateQuery) {
@@ -80,28 +79,11 @@ export class CommentService {
       where: { id },
       relations: ['post', 'user'],
     });
-    comment.isApproved = approve;
-    if (comment.isApproved) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { stats, ...post } = await this.postRepository.findOne({
-        where: { id: comment.post.id },
-        relations: ['stats'],
-      });
-
-      stats.avgRating *= stats.numberOfComments;
-      stats.numberOfComments++;
-      if (comment.user) {
-        stats.userComments++;
-      } else {
-        stats.guestComments++;
-      }
-      stats.avgRating += comment.rate;
-      stats.avgRating /= stats.numberOfComments;
-      await this.postStatsRepository.update({ id: stats.id }, stats);
-
-      return await this.commentRepository.update({ id }, comment);
+    if (comment && approve) {
+      return await this.commentRepository.save(comment);
     } else if (!comment.isApproved) {
-      return await this.commentRepository.delete({ id });
+      await this.commentRepository.delete({ id });
+      throw new BadRequestException('Comment deleted');
     } else {
       throw new BadRequestException('Comment not found');
     }
