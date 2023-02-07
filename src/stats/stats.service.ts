@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from 'src/entitie/comment.entity';
 import { PostStatus } from 'src/entitie/postStatus.entity';
 import { Repository } from 'typeorm';
+import * as excel from 'exceljs';
 
 @Injectable()
 export class StatsService {
@@ -30,5 +31,25 @@ export class StatsService {
     comment.user ? stats.userComments++ : stats.guestComments++;
 
     await this.postStatusRepository.save(stats);
+  }
+
+  async getStatsCsv() {
+    const stats = await this.postStatusRepository.find();
+
+    const workbook = new excel.Workbook();
+    const worksheet = workbook.addWorksheet('Post Stats');
+
+    worksheet.columns = [
+      { header: 'Id', key: 'id' },
+      { header: 'Views on post', key: 'postViews', width: 15 },
+      { header: 'Total comments', key: 'numberOfComments', width: 15 },
+      { header: 'Number of user comments', key: 'userComments', width: 25 },
+      { header: 'Number of guest comments', key: 'guestComments', width: 25 },
+      { header: 'Average ratings', key: 'avgRating', width: 15 },
+    ];
+
+    worksheet.addRows(stats);
+
+    return await workbook.xlsx.writeFile(__dirname + 'stats.xlsx');
   }
 }
