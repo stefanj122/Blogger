@@ -61,6 +61,7 @@ export class PostsService {
   ): Promise<Post> {
     return this.postsRepository.save({ id, ...updatePostDto });
   }
+
   deletePost(id: number) {
     return this.postsRepository.delete({ id });
   }
