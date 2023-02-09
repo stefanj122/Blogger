@@ -69,11 +69,13 @@ export class CommentService {
     this.eventEmitter.emit('postVisited', postId);
     return { count, data };
   }
+
   async findAllComments(query: PaginateQuery) {
     return paginate(query, this.commentRepository, {
       sortableColumns: ['id'],
     });
   }
+
   async approveComment(id: number, approve: boolean) {
     const comment = await this.commentRepository.findOne({
       where: { id },
@@ -88,6 +90,7 @@ export class CommentService {
       throw new BadRequestException('Comment not found');
     }
   }
+
   async getComment(id: number): Promise<Comment> {
     return await this.commentRepository.findOneBy({ id });
   }

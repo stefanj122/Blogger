@@ -32,6 +32,7 @@
     "@types/multer": "^1.4.7",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "exceljs": "^4.3.0",
     "hbs": "^4.2.0",
     "mysql2": "^2.3.3",
     "nestjs-paginate": "^4.6.3",
