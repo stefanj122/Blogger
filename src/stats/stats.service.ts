@@ -52,4 +52,13 @@ export class StatsService {
 
     return await workbook.xlsx.writeFile(__dirname + 'stats.xlsx');
   }
+
+  async getPostStats(postId: number) {
+    const { post, ...stats } = await this.postStatusRepository.findOne({
+      where: { post: { id: postId } },
+      relations: ['post'],
+    });
+
+    return { post, stats };
+  }
 }
