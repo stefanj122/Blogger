@@ -35,21 +35,25 @@ export class StatsService {
 
   async getStatsCsv() {
     const stats = await this.postStatusRepository.find();
+    const statsKeys = Object.keys(stats[0]);
+    const arr = [];
 
     const workbook = new excel.Workbook();
     const worksheet = workbook.addWorksheet('Post Stats');
-
-    worksheet.columns = [
-      { header: 'Id', key: 'id' },
-      { header: 'Views on post', key: 'postViews', width: 15 },
-      { header: 'Total comments', key: 'numberOfComments', width: 15 },
-      { header: 'Number of user comments', key: 'userComments', width: 25 },
-      { header: 'Number of guest comments', key: 'guestComments', width: 25 },
-      { header: 'Average ratings', key: 'avgRating', width: 15 },
-    ];
+    statsKeys.forEach((el) => {
+      arr.push({ header: el, key: el, width: 25 });
+    });
+    worksheet.columns = arr;
+    // worksheet.columns = [
+    //   { header: 'Id', key: 'id' },
+    //   { header: 'Views on post', key: 'postViews', width: 15 },
+    //   { header: 'Total comments', key: 'numberOfComments', width: 15 },
+    //   { header: 'Number of user comments', key: 'userComments', width: 25 },
+    //   { header: 'Number of guest comments', key: 'guestComments', width: 25 },
+    //   { header: 'Average ratings', key: 'avgRating', width: 15 },
+    // ];
 
     worksheet.addRows(stats);
-
     return await workbook.xlsx.writeFile(__dirname + 'stats.xlsx');
   }
 
@@ -60,5 +64,26 @@ export class StatsService {
     });
 
     return { post, stats };
+  }
+
+  async uploadExcel(file: Express.Multer.File) {
+    const arrOfPromises = [];
+    const workbook = new excel.Workbook();
+    const data = await workbook.xlsx.load(file.buffer);
+    const worksheet = data.getWorksheet(1);
+    const keys: any = worksheet.getRow(1).values;
+    const obj = {};
+
+    worksheet.eachRow((row, i) => {
+      if (i > 1) {
+        for (let i = 1; i < keys.length; i++) {
+          obj[keys[i]] = row.values[i];
+        }
+        arrOfPromises.push(this.postStatusRepository.save(obj));
+      }
+    });
+    Promise.all(arrOfPromises).then(() => {
+      console.log('Database imported from excel');
+    });
   }
 }

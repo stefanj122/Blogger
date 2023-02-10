@@ -81,11 +81,14 @@ export class CommentService {
       where: { id },
       relations: ['post', 'user'],
     });
-    if (comment && approve) {
+    if (!comment.isApproved && approve) {
+      comment.isApproved = approve;
       return await this.commentRepository.save(comment);
-    } else if (!comment.isApproved) {
+    } else if (!approve) {
       await this.commentRepository.delete({ id });
       throw new BadRequestException('Comment deleted');
+    } else if (comment.isApproved) {
+      throw new BadRequestException('Comment alrady approved');
     } else {
       throw new BadRequestException('Comment not found');
     }
